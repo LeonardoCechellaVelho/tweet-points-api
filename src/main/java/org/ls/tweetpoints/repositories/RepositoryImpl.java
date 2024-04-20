@@ -10,7 +10,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class RepositoryImpl implements Repository {
     
     public UUID persistCampaign(Campaign campaign) {
-        campaign.persist();
+        // campaign.persist();
         return campaign.getId();
     };
 }

@@ -1,10 +1,7 @@
 package org.ls.tweetpoints.services;
 
-import java.util.UUID;
-
-import org.ls.tweetpoints.data.models.CampaignModel;
+import org.ls.tweetpoints.data.entities.Campaign;
 
 public interface CampaignService {
-    
-    void addCampaign(CampaignModel campaignModel);
+    Campaign addCampaign(Campaign request);
 }

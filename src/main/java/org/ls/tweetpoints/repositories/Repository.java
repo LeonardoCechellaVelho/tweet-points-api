@@ -1,11 +1,10 @@
 package org.ls.tweetpoints.repositories;
 
-import java.util.UUID;
-
 import org.ls.tweetpoints.data.entities.Campaign;
+import org.ls.tweetpoints.data.entities.User;
 
 public interface Repository {
 
-    void persistCampaign(Campaign campaign);
-    
+    Campaign persistCampaign(Campaign campaign);
+    User persistUser(User user);
 }

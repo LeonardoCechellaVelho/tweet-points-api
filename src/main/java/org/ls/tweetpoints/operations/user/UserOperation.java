@@ -20,8 +20,17 @@ public interface UserOperation {
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponses(value = {
         @APIResponse(responseCode = "200", description = "User added!", 
-                     content = @Content(mediaType = "application/json", 
-                     schema = @Schema(implementation = UserResponse.class)))
+                     content = @Content(mediaType = MediaType.APPLICATION_JSON, 
+                     schema = @Schema(implementation = UserResponse.class))),
+        @APIResponse(responseCode = "400", description = "Bad Request", 
+                     content = @Content(mediaType = MediaType.APPLICATION_JSON, 
+                     schema = @Schema(implementation = String.class))),
+        @APIResponse(responseCode = "422", description = "Unprocessable content", 
+                     content = @Content(mediaType = MediaType.APPLICATION_JSON, 
+                     schema = @Schema(implementation = String.class))),
+        @APIResponse(responseCode = "500", description = "System Error", 
+                     content = @Content(mediaType = MediaType.APPLICATION_JSON, 
+                     schema = @Schema(implementation = String.class)))
     })
     UserResponse addUser(@RequestBody(name = "Add User", description = "User data") User user);
 }

@@ -4,13 +4,23 @@ import java.util.UUID;
 
 import org.ls.tweetpoints.data.entities.Campaign;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import com.surrealdb.driver.SyncSurrealDriver;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 @ApplicationScoped
 public class RepositoryImpl implements Repository {
-    
-    public UUID persistCampaign(Campaign campaign) {
-        // campaign.persist();
-        return campaign.getId();
-    };
+
+    private SyncSurrealDriver driver;
+
+    @Override
+    public void persistCampaign(Campaign campaign) {
+        System.out.println(driver.create("campaign", campaign).toString());
+    }
+
+    /* public List<Campaign> getAllCampaigns() {
+        return driver.select("campaign", Campaign.class);
+    } */
 }

@@ -16,6 +16,7 @@ public class CampaignOperationImpl implements CampaignOperation {
     @Override
     @Transactional
     public CampaignResponse addCampaign(CampaignModel campaignModel) {
-        return CampaignResponse.builder().sucesso(true).id(campaignService.addCampaign(campaignModel)).build();
+        campaignService.addCampaign(campaignModel);
+        return CampaignResponse.builder().sucesso(true).build();
     }
 }

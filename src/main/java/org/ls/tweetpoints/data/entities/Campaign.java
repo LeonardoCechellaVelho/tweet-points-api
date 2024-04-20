@@ -9,16 +9,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Setter
 @Getter
 public class Campaign {
-    private UUID id;
+    private String id;
     private String phrase;
 
     public static Campaign from(CampaignModel campaignModel) {
-        return new Campaign(UUID.randomUUID(), campaignModel.getPhrase());
+        return new Campaign(UUID.randomUUID().toString(), campaignModel.getPhrase());
     }
 }

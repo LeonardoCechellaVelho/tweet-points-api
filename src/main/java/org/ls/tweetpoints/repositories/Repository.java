@@ -6,6 +6,6 @@ import org.ls.tweetpoints.data.entities.Campaign;
 
 public interface Repository {
 
-    UUID persistCampaign(Campaign campaign);
+    void persistCampaign(Campaign campaign);
     
 }

@@ -16,7 +16,7 @@ public class CampaignServiceImpl implements CampaignService {
     private final Repository repository;
     
     @Override
-    public UUID addCampaign(CampaignModel campaignModel) {
-        return this.repository.persistCampaign(Campaign.from(campaignModel));
+    public void addCampaign(CampaignModel campaignModel) {
+        this.repository.persistCampaign(Campaign.from(campaignModel));
     };
 }

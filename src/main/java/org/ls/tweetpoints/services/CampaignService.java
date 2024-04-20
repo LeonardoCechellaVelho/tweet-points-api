@@ -6,5 +6,5 @@ import org.ls.tweetpoints.data.models.CampaignModel;
 
 public interface CampaignService {
     
-    UUID addCampaign(CampaignModel campaignModel);
+    void addCampaign(CampaignModel campaignModel);
 }

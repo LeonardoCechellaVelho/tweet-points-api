@@ -7,6 +7,7 @@ import java.util.Map;
 import org.ls.tweetpoints.config.AppException;
 import org.ls.tweetpoints.config.SurrealConfig;
 import org.ls.tweetpoints.data.entities.Campaign;
+import org.ls.tweetpoints.data.entities.Tweet;
 import org.ls.tweetpoints.data.entities.User;
 import org.ls.tweetpoints.data.enums.Errors;
 
@@ -21,14 +22,31 @@ public class RepositoryImpl implements Repository {
 
     @Override
     public Campaign persistCampaign(Campaign campaign) {
-        return driver.database().create("campaign", campaign);
+        Map<String, String> params = new HashMap<>();
+        params.put("phrase", campaign.getPhrase());
+        if (driver.database().query("SELECT * FROM campaign WHERE phrase = $phrase", params, Campaign.class).get(0).getResult().isEmpty()) {
+            return driver.database().create("campaign", campaign);
+        } else {
+            throw new AppException(Errors.BAD_REQUEST.getCode(),"Phrase already registered");
+        }
+    }
+
+    @Override
+    public Tweet persistTweet(Tweet tweet) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", tweet.getUser().getEmail());
+        params.put("payload", tweet.getPayload());
+        if (driver.database().query("SELECT * FROM tweet WHERE user.email = $email and payload = $payload", params, Tweet.class).get(0).getResult().isEmpty()) {
+            return driver.database().create("tweet", tweet);
+        } else {
+            throw new AppException(Errors.BAD_REQUEST.getCode(),"E-mail already has participated in this campaign");
+        }
     }
 
     @Override
     public User persistUser(User user) {
         Map<String, String> params = new HashMap<>();
         params.put("email", user.getEmail());
-        System.out.println(driver.database().query("SELECT * FROM user WHERE email = $email", params, User.class).get(0).getResult());
         if (driver.database().query("SELECT * FROM user WHERE email = $email", params, User.class).get(0).getResult().isEmpty()) {
             return driver.database().create("user", user);
         } else {
@@ -36,7 +54,10 @@ public class RepositoryImpl implements Repository {
         }
     }
 
-    public List<Campaign> getAllCampaigns() {
-        return driver.database().select("campaign", Campaign.class);
-    }
+    /* public List<Campaign> getAllCampaigns(String email, LocalDateTime timeFrom, LocalDateTime timeTo) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", tweet.getUser().getEmail());
+        params.put("payload", tweet.getPayload());
+        driver.database().query("SELECT * FROM Tweet WHERE email = $email", params, User.class).get(0).getResult()
+    } */
 }

@@ -5,4 +5,5 @@ import org.ls.tweetpoints.data.models.UserModel;
 
 public interface UserService {
     User addUser(UserModel request);
+    User getUser(UserModel request);
 }

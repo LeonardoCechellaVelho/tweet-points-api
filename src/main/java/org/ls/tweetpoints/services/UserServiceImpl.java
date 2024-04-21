@@ -18,4 +18,8 @@ public class UserServiceImpl implements UserService {
         return this.repository.persistUser(User.from(request));
     }
     
+    @Override
+    public User getUser(UserModel request) {
+        return this.repository.getUser(request);
+    }
 }

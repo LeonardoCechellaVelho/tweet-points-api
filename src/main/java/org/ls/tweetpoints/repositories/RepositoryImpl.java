@@ -13,6 +13,7 @@ import org.ls.tweetpoints.data.entities.Tweet;
 import org.ls.tweetpoints.data.entities.User;
 import org.ls.tweetpoints.data.enums.Errors;
 import org.ls.tweetpoints.data.models.TweetModel;
+import org.ls.tweetpoints.data.models.UserModel;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import lombok.AllArgsConstructor;
@@ -70,6 +71,16 @@ public class RepositoryImpl implements Repository {
             throw new AppException(Errors.BAD_REQUEST.getCode(),"E-mail already registered");
         }
     }
+    
+    @Override
+    public User getUser(UserModel userModel) {
+        List<User> user = this.findUser(userModel.getEmail());
+        if (!user.isEmpty()) {
+            return user.get(0);
+        } else {
+            throw new AppException(Errors.BAD_REQUEST.getCode(),"User not found");
+        }
+    }
 
     private List<User> findUser(String email) {
         Map<String, String> params = new HashMap<>();
@@ -88,15 +99,5 @@ public class RepositoryImpl implements Repository {
         Map<String, String> params = new HashMap<>();
         params.put("phrase", phrase);
         return driver.database().query("SELECT * FROM campaign WHERE phrase = $phrase", params, Campaign.class).get(0).getResult();
-    }
-
-    // TODO: FINISH IT
-    public Integer getUserPoints(String email, LocalDateTime timeFrom, LocalDateTime timeTo) {
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        params.put("timeFrom", timeFrom.toString());
-        params.put("timeTo", timeTo.toString());
-        driver.database().query("SELECT * FROM Tweet WHERE email = $email", params, User.class).get(0).getResult();
-        return 1;
     }
 }

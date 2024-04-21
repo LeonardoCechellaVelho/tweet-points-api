@@ -20,4 +20,11 @@ public class UserOperationImpl implements UserOperation {
         User user = userService.addUser(request);
         return UserResponse.builder().user(user).build();
     }
+
+    @Override
+    @Transactional
+    public UserResponse getUser(UserModel request) {
+        User user = userService.getUser(request);
+        return UserResponse.builder().user(user).build();
+    }
 }

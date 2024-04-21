@@ -2,7 +2,6 @@ package org.ls.tweetpoints.operations.tweet;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
-import org.ls.tweetpoints.data.entities.Tweet;
 import org.ls.tweetpoints.data.models.TweetModel;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.media.Content;

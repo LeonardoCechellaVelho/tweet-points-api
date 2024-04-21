@@ -90,6 +90,7 @@ public class RepositoryImpl implements Repository {
         return driver.database().query("SELECT * FROM campaign WHERE phrase = $phrase", params, Campaign.class).get(0).getResult();
     }
 
+    // TODO: FINISH IT
     public Integer getUserPoints(String email, LocalDateTime timeFrom, LocalDateTime timeTo) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);

@@ -1,6 +1,7 @@
 package org.ls.tweetpoints.operations.campaign;
 
 import org.ls.tweetpoints.data.entities.Campaign;
+import org.ls.tweetpoints.data.models.CampaignModel;
 import org.ls.tweetpoints.services.CampaignService;
 
 import jakarta.transaction.Transactional;
@@ -8,7 +9,7 @@ import jakarta.ws.rs.Path;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-@Path("/Campaign")
+@Path("/campaign")
 public class CampaignOperationImpl implements CampaignOperation {
     
     CampaignService campaignService;
@@ -24,6 +25,13 @@ public class CampaignOperationImpl implements CampaignOperation {
     @Transactional
     public CampaignResponse setCurrentCampaign(Campaign request) {
         Campaign campaign = campaignService.setCurrentCampaign(request);
+        return CampaignResponse.builder().campaign(campaign).build();
+    }
+
+    @Override
+    @Transactional
+    public CampaignResponse updateCampaign(CampaignModel request) {
+        Campaign campaign = campaignService.updateCampaign(request);
         return CampaignResponse.builder().campaign(campaign).build();
     }
 

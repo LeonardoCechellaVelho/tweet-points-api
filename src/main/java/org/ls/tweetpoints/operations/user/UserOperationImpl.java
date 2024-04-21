@@ -1,5 +1,8 @@
 package org.ls.tweetpoints.operations.user;
 
+import java.util.List;
+
+import org.ls.tweetpoints.data.entities.Tweet;
 import org.ls.tweetpoints.data.entities.User;
 import org.ls.tweetpoints.data.models.UserModel;
 import org.ls.tweetpoints.services.UserService;
@@ -9,7 +12,7 @@ import jakarta.ws.rs.Path;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-@Path("/User")
+@Path("/user")
 public class UserOperationImpl implements UserOperation {
     
     UserService userService;
@@ -23,8 +26,15 @@ public class UserOperationImpl implements UserOperation {
 
     @Override
     @Transactional
-    public UserResponse getUser(UserModel request) {
-        User user = userService.getUser(request);
+    public UserResponse getUser(String email) {
+        User user = userService.getUser(new UserModel(email));
         return UserResponse.builder().user(user).build();
+    }
+
+    @Override
+    @Transactional
+    public UserTweetsResponse getUserTweets(String email) {
+        List<Tweet> tweets = userService.getUserTweets(new UserModel(email));
+        return UserTweetsResponse.builder().tweets(tweets).build();
     }
 }

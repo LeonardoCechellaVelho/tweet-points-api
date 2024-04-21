@@ -9,7 +9,7 @@ import jakarta.ws.rs.Path;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-@Path("/Tweet")
+@Path("/tweet")
 public class TweetOperationImpl implements TweetOperation {
     
     TweetService tweetService;

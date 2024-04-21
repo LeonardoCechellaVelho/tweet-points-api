@@ -1,5 +1,8 @@
 package org.ls.tweetpoints.services;
 
+import java.util.List;
+
+import org.ls.tweetpoints.data.entities.Tweet;
 import org.ls.tweetpoints.data.entities.User;
 import org.ls.tweetpoints.data.models.UserModel;
 import org.ls.tweetpoints.repositories.Repository;
@@ -21,5 +24,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser(UserModel request) {
         return this.repository.getUser(request);
+    }
+    
+    @Override
+    public List<Tweet> getUserTweets(UserModel request) {
+        return this.repository.getUserTweets(request);
     }
 }

@@ -1,6 +1,7 @@
 package org.ls.tweetpoints.services;
 
 import org.ls.tweetpoints.data.entities.Campaign;
+import org.ls.tweetpoints.data.models.CampaignModel;
 import org.ls.tweetpoints.repositories.Repository;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -20,6 +21,11 @@ public class CampaignServiceImpl implements CampaignService {
     @Override
     public Campaign setCurrentCampaign(Campaign request) {
         return this.repository.setCurrentCampaign(request);
+    };
+
+    @Override
+    public Campaign updateCampaign(CampaignModel request) {
+        return this.repository.updateCampaign(request);
     };
 
     @Override

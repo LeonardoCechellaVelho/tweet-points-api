@@ -2,6 +2,7 @@ package org.ls.tweetpoints.operations.campaign;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.ls.tweetpoints.data.models.CampaignModel;
 import org.ls.tweetpoints.data.models.NewCampaignModel;
 
@@ -24,6 +25,7 @@ public interface CampaignOperation {
     @Operation(summary = "Add Campaign", description = "Add Campaign")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @SecurityRequirement(name = "Keycloak")
     @APIResponses(value = {
         @APIResponse(responseCode = "200", description = "Campaign added!", 
                      content = @Content(mediaType = MediaType.APPLICATION_JSON, 
@@ -45,6 +47,7 @@ public interface CampaignOperation {
     @Operation(summary = "Set Current Campaign", description = "Set Current Campaign")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @SecurityRequirement(name = "Keycloak")
     @APIResponses(value = {
         @APIResponse(responseCode = "200", description = "Campaign set!", 
                      content = @Content(mediaType = MediaType.APPLICATION_JSON, 
@@ -66,6 +69,7 @@ public interface CampaignOperation {
     @Operation(summary = "Update Campaign", description = "Update Campaign")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @SecurityRequirement(name = "Keycloak")
     @APIResponses(value = {
         @APIResponse(responseCode = "200", description = "Campaign updated!", 
                      content = @Content(mediaType = MediaType.APPLICATION_JSON, 
@@ -87,6 +91,7 @@ public interface CampaignOperation {
     @Operation(summary = "Get Current Campaign", description = "Get Current Campaign")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @SecurityRequirement(name = "Keycloak")
     @APIResponses(value = {
         @APIResponse(responseCode = "200", description = "Campaign found!", 
                      content = @Content(mediaType = MediaType.APPLICATION_JSON, 

@@ -2,6 +2,7 @@ package org.ls.tweetpoints.operations.user;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.ls.tweetpoints.data.models.UserModel;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -22,6 +23,7 @@ public interface UserOperation {
     @Operation(summary = "Add User", description = "Add User")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @SecurityRequirement(name = "Keycloak")
     @APIResponses(value = {
         @APIResponse(responseCode = "200", description = "User added!", 
                      content = @Content(mediaType = MediaType.APPLICATION_JSON, 
@@ -42,6 +44,7 @@ public interface UserOperation {
     @Path("/get")
     @Operation(summary = "Get User", description = "Get User")
     @Produces(MediaType.APPLICATION_JSON)
+    @SecurityRequirement(name = "Keycloak")
     @APIResponses(value = {
         @APIResponse(responseCode = "200", description = "User found!", 
                      content = @Content(mediaType = MediaType.APPLICATION_JSON, 
@@ -62,6 +65,7 @@ public interface UserOperation {
     @Path("/get/tweets")
     @Operation(summary = "Get User Tweets", description = "Get User Tweets")
     @Produces(MediaType.APPLICATION_JSON)
+    @SecurityRequirement(name = "Keycloak")
     @APIResponses(value = {
         @APIResponse(responseCode = "200", description = "User found!", 
                      content = @Content(mediaType = MediaType.APPLICATION_JSON, 

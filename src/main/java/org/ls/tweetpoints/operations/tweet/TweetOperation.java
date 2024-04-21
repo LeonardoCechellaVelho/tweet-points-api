@@ -2,6 +2,7 @@ package org.ls.tweetpoints.operations.tweet;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
+import org.eclipse.microprofile.openapi.annotations.security.SecurityRequirement;
 import org.ls.tweetpoints.data.models.TweetModel;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -20,6 +21,7 @@ public interface TweetOperation {
     @Operation(summary = "Add Tweet", description = "Add Tweet")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @SecurityRequirement(name = "Keycloak")
     @APIResponses(value = {
         @APIResponse(responseCode = "200", description = "Tweet added!", 
                      content = @Content(mediaType = MediaType.APPLICATION_JSON, 

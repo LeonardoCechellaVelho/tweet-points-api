@@ -7,6 +7,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Setter
 @Getter
-public class CampaignModel {
-    private String phrase;
+public class NewCampaignModel {
+    private String currentPhrase;
+    private String newPhrase;
 }

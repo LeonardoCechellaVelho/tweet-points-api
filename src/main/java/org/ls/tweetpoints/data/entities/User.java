@@ -15,10 +15,11 @@ import lombok.ToString;
 @Setter
 @Getter
 public class User {
+    private String id;
     private String email;
     private Integer points;
 
     public static User from(UserModel userModel) {
-        return new User(userModel.getEmail(), 0);
+        return new User(null, userModel.getEmail(), 0);
     }
 }

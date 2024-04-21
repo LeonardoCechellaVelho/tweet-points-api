@@ -13,7 +13,7 @@ import org.ls.tweetpoints.data.entities.Tweet;
 import org.ls.tweetpoints.data.entities.User;
 import org.ls.tweetpoints.data.enums.Errors;
 import org.ls.tweetpoints.data.enums.Operations;
-import org.ls.tweetpoints.data.models.CampaignModel;
+import org.ls.tweetpoints.data.models.NewCampaignModel;
 import org.ls.tweetpoints.data.models.TweetModel;
 import org.ls.tweetpoints.data.models.UserModel;
 
@@ -37,7 +37,7 @@ public class RepositoryImpl implements Repository {
 
     public Campaign setCurrentCampaign(Campaign campaign) {
         if (!this.findCampaign(campaign.getPhrase()).isEmpty()) {
-            return driver.database().create("currentCampaign", new CurrentCampaign(campaign, LocalDateTime.now())).getCampaign();
+            return driver.database().create("currentCampaign", new CurrentCampaign(null, campaign, LocalDateTime.now())).getCampaign();
         } else {
             throw new AppException(Errors.BAD_REQUEST.getCode(),"Campaign does not exists");
         }
@@ -54,7 +54,7 @@ public class RepositoryImpl implements Repository {
     }
     
     @Override
-    public Campaign updateCampaign(CampaignModel request) {
+    public Campaign updateCampaign(NewCampaignModel request) {
         List<Campaign> campaignNewFound = this.findCampaign(request.getNewPhrase());
         if (campaignNewFound.isEmpty()) {
             List<Campaign> campaignCurrentFound = this.findCampaign(request.getCurrentPhrase());
@@ -116,7 +116,7 @@ public class RepositoryImpl implements Repository {
         }
     }
 
-    private Campaign updateCampaignCurrentPhraseFound(CampaignModel request, Campaign campaignFound) {
+    private Campaign updateCampaignCurrentPhraseFound(NewCampaignModel request, Campaign campaignFound) {
         Campaign campaign = campaignFound;
         campaign.setPhrase(request.getNewPhrase());
         List<CurrentCampaign> currentCampaignList = this.findCurrentCampaigns(request.getCurrentPhrase());
@@ -135,10 +135,10 @@ public class RepositoryImpl implements Repository {
             }
             for (CurrentCampaign currentCampaign : currentCampaignList) {
                 currentCampaign.setCampaign(campaign);
-                driver.database().update("currentCampaign", currentCampaign);
+                driver.database().update(currentCampaign.getId(), currentCampaign);
             }
         }
-        return driver.database().update("campaign", campaign).get(0);
+        return driver.database().update(campaignFound.getId(), campaignFound).get(0);
     }
 
     private Tweet createTweet(TweetModel tweetModel, List<User> userFound) {

@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class CurrentCampaign {
+    private String id;
     private Campaign campaign;
     private LocalDateTime timestamp;
 }

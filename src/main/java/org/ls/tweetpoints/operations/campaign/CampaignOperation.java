@@ -2,8 +2,8 @@ package org.ls.tweetpoints.operations.campaign;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
-import org.ls.tweetpoints.data.entities.Campaign;
 import org.ls.tweetpoints.data.models.CampaignModel;
+import org.ls.tweetpoints.data.models.NewCampaignModel;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -37,7 +37,7 @@ public interface CampaignOperation {
                      content = @Content(mediaType = MediaType.APPLICATION_JSON, 
                      schema = @Schema(implementation = String.class)))
     })
-    CampaignResponse addCampaign(@RequestBody(name = "Add Campaign", description = "Campaign data") Campaign campaign);
+    CampaignResponse addCampaign(@RequestBody(name = "Add Campaign", description = "Campaign data") CampaignModel campaign);
 
     @POST
     @Path("/set")
@@ -58,7 +58,7 @@ public interface CampaignOperation {
                      content = @Content(mediaType = MediaType.APPLICATION_JSON, 
                      schema = @Schema(implementation = String.class)))
     })
-    CampaignResponse setCurrentCampaign(@RequestBody(name = "Set Current Campaign", description = "Campaign data") Campaign campaign);
+    CampaignResponse setCurrentCampaign(@RequestBody(name = "Set Current Campaign", description = "Campaign data") CampaignModel campaign);
 
     @PUT
     @Path("/update")
@@ -79,7 +79,7 @@ public interface CampaignOperation {
                      content = @Content(mediaType = MediaType.APPLICATION_JSON, 
                      schema = @Schema(implementation = String.class)))
     })
-    CampaignResponse updateCampaign(@RequestBody(name = "Update Campaign", description = "Campaign data") CampaignModel request);
+    CampaignResponse updateCampaign(@RequestBody(name = "Update Campaign", description = "Campaign data") NewCampaignModel request);
     
     @GET
     @Path("/get")

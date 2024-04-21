@@ -17,12 +17,13 @@ import lombok.ToString;
 @Setter
 @Getter
 public class Tweet {
+    private String id;
     private String payload;
     private LocalDateTime timestamp;
     private User user;
 
     
     public static Tweet from(TweetModel tweetModel, User user) {
-        return new Tweet(tweetModel.getPayload(), tweetModel.getTimestamp(), user);
+        return new Tweet(null, tweetModel.getPayload(), tweetModel.getTimestamp(), user);
     }
 }

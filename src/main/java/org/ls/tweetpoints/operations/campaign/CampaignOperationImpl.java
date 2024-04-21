@@ -2,6 +2,7 @@ package org.ls.tweetpoints.operations.campaign;
 
 import org.ls.tweetpoints.data.entities.Campaign;
 import org.ls.tweetpoints.data.models.CampaignModel;
+import org.ls.tweetpoints.data.models.NewCampaignModel;
 import org.ls.tweetpoints.services.CampaignService;
 
 import jakarta.transaction.Transactional;
@@ -16,21 +17,21 @@ public class CampaignOperationImpl implements CampaignOperation {
 
     @Override
     @Transactional
-    public CampaignResponse addCampaign(Campaign request) {
+    public CampaignResponse addCampaign(CampaignModel request) {
         Campaign campaign = campaignService.addCampaign(request);
         return CampaignResponse.builder().campaign(campaign).build();
     }
 
     @Override
     @Transactional
-    public CampaignResponse setCurrentCampaign(Campaign request) {
+    public CampaignResponse setCurrentCampaign(CampaignModel request) {
         Campaign campaign = campaignService.setCurrentCampaign(request);
         return CampaignResponse.builder().campaign(campaign).build();
     }
 
     @Override
     @Transactional
-    public CampaignResponse updateCampaign(CampaignModel request) {
+    public CampaignResponse updateCampaign(NewCampaignModel request) {
         Campaign campaign = campaignService.updateCampaign(request);
         return CampaignResponse.builder().campaign(campaign).build();
     }

@@ -12,9 +12,11 @@ import lombok.AllArgsConstructor;
 public class TweetServiceImpl implements TweetService {
 
     private final Repository repository;
+    private ValidatorService validator;
 
     @Override
     public Tweet addTweet(TweetModel request) {
+        validator.validateTweet(request);
         return this.repository.persistTweet(request);
     }
     

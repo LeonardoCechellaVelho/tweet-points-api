@@ -1,6 +1,7 @@
 package org.ls.tweetpoints.repositories;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,14 +37,12 @@ public class RepositoryImpl implements Repository {
         }
     }
 
+    @Override
     public Campaign setCurrentCampaign(Campaign campaign) {
         List<Campaign> campaignFound = this.findCampaign(campaign.getPhrase());
         if (!campaignFound.isEmpty()) {
-            if (!campaign.getPhrase().equals(campaignFound.get(0).getPhrase())) {
-                return driver.database().create("currentCampaign", new CurrentCampaign(null, campaign, LocalDateTime.now())).getCampaign();
-            } else {
-                throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.CAMPAIGN_IS_ALREADY_CURRENT);
-            }
+            this.verifyCampaignPhrase(campaign);
+            return driver.database().create("currentCampaign", new CurrentCampaign(null, campaign, LocalDateTime.now())).getCampaign();
         } else {
             throw new AppException(HttpErrors.BAD_REQUEST.getCode(),Errors.CAMPAIGN_DOES_NOT_EXIST);
         }
@@ -78,19 +77,8 @@ public class RepositoryImpl implements Repository {
     public Tweet persistTweet(TweetModel tweetModel) {
         List<User> userFound = this.findUser(tweetModel.getUser().getEmail());
         List<CurrentCampaign> currentCampaign = this.findCurrentCampaign();
-        if (!currentCampaign.isEmpty()) {
-            if (tweetModel.getPayload().equals(currentCampaign.get(0).getCampaign().getPhrase())) {
-                if (!userFound.isEmpty()) {
-                    return createTweet(tweetModel, userFound);
-                } else {
-                    throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.USER_NOT_FOUND);
-                }
-            } else {
-                throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.TWEETED_CAMPAIGN_IS_NOT_CURRENT);
-            }
-        } else {
-            throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.NO_ACTIVE_CAMPAIGNS);
-        }
+        this.verifyTweet(tweetModel, userFound, currentCampaign);
+        return createTweet(tweetModel, userFound);
     }
 
     @Override
@@ -122,27 +110,40 @@ public class RepositoryImpl implements Repository {
         }
     }
 
+    private void verifyTweet(TweetModel tweetModel, List<User> userFound, List<CurrentCampaign> currentCampaign) {
+        if (!currentCampaign.isEmpty()) {
+            if (tweetModel.getPayload().equals(currentCampaign.get(0).getCampaign().getPhrase())) {
+                if (tweetModel.getTimestamp().isAfter(currentCampaign.get(0).getTimestamp())) {   
+                    if (userFound.isEmpty()) {
+                        throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.USER_NOT_FOUND);
+                    }
+                } else {
+                    throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.TWEETED_CAMPAIGN_IS_BEFORE);
+                }
+            } else {
+                throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.TWEETED_CAMPAIGN_IS_NOT_CURRENT);
+            }
+        } else {
+            throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.NO_ACTIVE_CAMPAIGNS);
+        }
+    }
+
+    private void verifyCampaignPhrase(Campaign campaign) {
+        List<CurrentCampaign> currentCampaign = this.findCurrentCampaign();
+        if (!currentCampaign.isEmpty()) {
+            if (campaign.getPhrase().equals(currentCampaign.get(0).getCampaign().getPhrase())) {
+                throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.CAMPAIGN_IS_ALREADY_CURRENT);
+            }
+        }
+    }
+
     private Campaign updateCampaignCurrentPhraseFound(NewCampaignModel request, Campaign campaignFound) {
         Campaign campaign = campaignFound;
         campaign.setPhrase(request.getNewPhrase());
         List<CurrentCampaign> currentCampaignList = this.findCurrentCampaigns(request.getCurrentPhrase());
         if (!currentCampaignList.isEmpty()) {
-            List<Tweet> tweetsFound = this.findTweetsByPayload(request.getCurrentPhrase());
-            if (!tweetsFound.isEmpty()) {
-                for (Tweet tweet : tweetsFound) {
-                    if (this.wasCurrentCampaign(tweet.getTimestamp().toString(), tweet.getPayload())) {
-                        List<User> userFound = this.findUser(tweet.getUser().getEmail());
-                        if (!userFound.isEmpty()) {
-                            User user = userFound.get(0);
-                            this.updateUserPoints(tweet, user, Operations.SUBTRACT);
-                        }
-                    }
-                }
-            }
-            for (CurrentCampaign currentCampaign : currentCampaignList) {
-                currentCampaign.setCampaign(campaign);
-                driver.database().update(currentCampaign.getId(), currentCampaign);
-            }
+            this.updateUserFromTweet(request.getCurrentPhrase());
+            this.updateCurrentCampaigns(campaign, currentCampaignList);
         }
         return driver.database().update(campaignFound.getId(), campaignFound).get(0);
     }
@@ -150,17 +151,17 @@ public class RepositoryImpl implements Repository {
     private Tweet createTweet(TweetModel tweetModel, List<User> userFound) {
         User user = userFound.get(0);
         Tweet tweet = Tweet.from(tweetModel, user);
-        this.updateUserPoints(tweet, user, Operations.INCREMENT);
-        return driver.database().create("tweet", tweet);
-    }
-
-    private void updateUserPoints(Tweet tweet, User user, Operations operation) {
         if (this.findTweet(tweet).isEmpty()) {
-            user.setPoints(Operations.INCREMENT.equals(operation) ? user.getPoints() + 10 : user.getPoints() - 10);
-            driver.database().update("user", user);
+            this.updateUserPoints(user, Operations.INCREMENT);
+            return driver.database().create("tweet", tweet);
         } else {
             throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.EMAIL_ALREADY_PARTICIPATED);
         }
+    }
+
+    private void updateUserPoints(User user, Operations operation) {
+        user.setPoints(Operations.INCREMENT.equals(operation) ? user.getPoints() + 10 : user.getPoints() - 10);
+        driver.database().update(user.getId(), user);
     }
 
     private List<User> findUser(String email) {
@@ -204,17 +205,44 @@ public class RepositoryImpl implements Repository {
         return driver.database().query("SELECT * FROM currentCampaign WHERE campaign.phrase = $phrase ORDER BY timestamp DESC", params, CurrentCampaign.class).get(0).getResult();
     }
 
-    private boolean wasCurrentCampaign(String timestamp, String phrase) {
-        String previousQuery = "SELECT * FROM currentCampaign WHERE timestamp <= :timestamp ORDER BY timestamp DESC LIMIT 1";
+    private boolean wasCurrentCampaign(Tweet tweet) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS'Z'");
+        String formattedDateTime = tweet.getTimestamp().format(formatter);
 
         Map<String, String> params = new HashMap<>();
-        params.put("timestamp", timestamp);
-        List<CurrentCampaign> previousCampaign = driver.database().query(previousQuery, params, CurrentCampaign.class).get(0).getResult();
-        
+        params.put("timestamp", formattedDateTime);
+        List<CurrentCampaign> previousCampaign = driver.database().query("SELECT * FROM currentCampaign WHERE timestamp <= $timestamp ORDER BY timestamp DESC LIMIT 1", params, CurrentCampaign.class).get(0).getResult();
+
         if (!previousCampaign.isEmpty()) {
             CurrentCampaign campaignWasCurrent = previousCampaign.get(0);
-            return phrase.equals(campaignWasCurrent.getCampaign().getPhrase());
+            return tweet.getPayload().equals(campaignWasCurrent.getCampaign().getPhrase());
         }
         return false;
+    }
+    
+    private void updateCurrentCampaigns(Campaign campaign, List<CurrentCampaign> currentCampaignList) {
+        for (CurrentCampaign currentCampaign : currentCampaignList) {
+            currentCampaign.setCampaign(campaign);
+            driver.database().update(currentCampaign.getId(), currentCampaign);
+        }
+    }
+
+    private void updateUserFromTweet(String currentPhrase) {
+        List<Tweet> tweetsFound = this.findTweetsByPayload(currentPhrase);
+        if (!tweetsFound.isEmpty()) {
+            for (Tweet tweet : tweetsFound) {
+                if (this.wasCurrentCampaign(tweet)) {
+                    List<User> userFound = this.findUser(tweet.getUser().getEmail());
+                    if (!userFound.isEmpty()) {
+                        User user = userFound.get(0);
+                        if (user.getPoints() > 0) {
+                            this.updateUserPoints(user, Operations.SUBTRACT);
+                        }
+                        tweet.setUser(user);
+                        driver.database().update(tweet.getId(), tweet);
+                    }
+                }
+            }
+        }
     }
 }

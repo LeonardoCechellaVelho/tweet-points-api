@@ -14,6 +14,7 @@ public enum Errors {
     EMAIL_ALREADY_REGISTERED("107","E-mail already registered"),
     USER_DOES_NOT_HAVE_TWEETS("108","User does not have tweets"),
     EMAIL_ALREADY_PARTICIPATED("109","E-mail already has participated in this campaign"),
+    TWEETED_CAMPAIGN_IS_BEFORE("110","Tweet is before the current campaign"),
     EMAIL_INVALID("1001","E-mail is invalid"),
     EMPTY_OR_NULL_FIELD("1002", "%s cannot be null or empty");
 

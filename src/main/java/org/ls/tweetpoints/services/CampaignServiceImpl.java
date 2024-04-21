@@ -11,7 +11,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @ApplicationScoped
 public class CampaignServiceImpl implements CampaignService {
-
     private final Repository repository;
     private ValidatorService validator;
     

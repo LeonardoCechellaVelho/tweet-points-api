@@ -1,6 +1,7 @@
 package org.ls.tweetpoints.operations.tweet;
 
 import org.ls.tweetpoints.data.entities.Tweet;
+import org.ls.tweetpoints.data.models.TweetModel;
 import org.ls.tweetpoints.services.TweetService;
 
 import jakarta.transaction.Transactional;
@@ -15,7 +16,7 @@ public class TweetOperationImpl implements TweetOperation {
 
     @Override
     @Transactional
-    public TweetResponse addTweet(Tweet request) {
+    public TweetResponse addTweet(TweetModel request) {
         Tweet tweet = tweetService.addTweet(request);
         return TweetResponse.builder().tweet(tweet).build();
     }

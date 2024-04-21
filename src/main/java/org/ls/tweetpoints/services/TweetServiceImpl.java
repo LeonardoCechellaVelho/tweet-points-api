@@ -1,6 +1,7 @@
 package org.ls.tweetpoints.services;
 
 import org.ls.tweetpoints.data.entities.Tweet;
+import org.ls.tweetpoints.data.models.TweetModel;
 import org.ls.tweetpoints.repositories.Repository;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -13,7 +14,7 @@ public class TweetServiceImpl implements TweetService {
     private final Repository repository;
 
     @Override
-    public Tweet addTweet(Tweet request) {
+    public Tweet addTweet(TweetModel request) {
         return this.repository.persistTweet(request);
     }
     

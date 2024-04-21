@@ -3,6 +3,7 @@ package org.ls.tweetpoints.operations.tweet;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.ls.tweetpoints.data.entities.Tweet;
+import org.ls.tweetpoints.data.models.TweetModel;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -32,5 +33,5 @@ public interface TweetOperation {
                      content = @Content(mediaType = MediaType.APPLICATION_JSON, 
                      schema = @Schema(implementation = String.class)))
     })
-    TweetResponse addTweet(@RequestBody(name = "Add Tweet", description = "Tweet data") Tweet tweet);
+    TweetResponse addTweet(@RequestBody(name = "Add Tweet", description = "Tweet data") TweetModel tweet);
 }

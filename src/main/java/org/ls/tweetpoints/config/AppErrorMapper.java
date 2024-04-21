@@ -9,7 +9,7 @@ public class AppErrorMapper implements ExceptionMapper<AppException> {
 
     @Override
     public Response toResponse(AppException exception) {
-        return Response.status(exception.getError()).entity(new AppError(exception.getError(), exception.getMessage())).build();
+        return Response.status(exception.getHttpError()).entity(new AppError(exception.getCode(), exception.getMessage())).build();
     }
     
 }

@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 
 import org.ls.tweetpoints.config.AppException;
 import org.ls.tweetpoints.data.enums.Errors;
+import org.ls.tweetpoints.data.enums.HttpErrors;
 
 public class EmailValidator {
 
@@ -14,7 +15,7 @@ public class EmailValidator {
 
     public static void isValid(String email) {
         if (!EMAIL_PATTERN.matcher(email).matches()) {
-            throw new AppException(Errors.UNPROCESSABLE_CONTENT.getCode(), "E-mail is invalid");
+            throw new AppException(HttpErrors.UNPROCESSABLE_CONTENT.getCode(), Errors.EMAIL_INVALID);
         }
     }
 }

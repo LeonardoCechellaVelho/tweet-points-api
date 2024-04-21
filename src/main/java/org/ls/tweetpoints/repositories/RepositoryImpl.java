@@ -12,6 +12,7 @@ import org.ls.tweetpoints.data.entities.CurrentCampaign;
 import org.ls.tweetpoints.data.entities.Tweet;
 import org.ls.tweetpoints.data.entities.User;
 import org.ls.tweetpoints.data.enums.Errors;
+import org.ls.tweetpoints.data.enums.HttpErrors;
 import org.ls.tweetpoints.data.enums.Operations;
 import org.ls.tweetpoints.data.models.NewCampaignModel;
 import org.ls.tweetpoints.data.models.TweetModel;
@@ -31,15 +32,20 @@ public class RepositoryImpl implements Repository {
         if (this.findCampaign(campaign.getPhrase()).isEmpty()) {
             return driver.database().create("campaign", campaign);
         } else {
-            throw new AppException(Errors.BAD_REQUEST.getCode(),"Phrase already registered");
+            throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.PHRASE_ALREADY_REGISTERED);
         }
     }
 
     public Campaign setCurrentCampaign(Campaign campaign) {
-        if (!this.findCampaign(campaign.getPhrase()).isEmpty()) {
-            return driver.database().create("currentCampaign", new CurrentCampaign(null, campaign, LocalDateTime.now())).getCampaign();
+        List<Campaign> campaignFound = this.findCampaign(campaign.getPhrase());
+        if (!campaignFound.isEmpty()) {
+            if (!campaign.getPhrase().equals(campaignFound.get(0).getPhrase())) {
+                return driver.database().create("currentCampaign", new CurrentCampaign(null, campaign, LocalDateTime.now())).getCampaign();
+            } else {
+                throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.CAMPAIGN_IS_ALREADY_CURRENT);
+            }
         } else {
-            throw new AppException(Errors.BAD_REQUEST.getCode(),"Campaign does not exists");
+            throw new AppException(HttpErrors.BAD_REQUEST.getCode(),Errors.CAMPAIGN_DOES_NOT_EXIST);
         }
     }
     
@@ -49,7 +55,7 @@ public class RepositoryImpl implements Repository {
         if (!currentCampaign.isEmpty()) {
             return currentCampaign.get(0).getCampaign();
         } else {
-            throw new AppException(Errors.BAD_REQUEST.getCode(),"There are no active campaigns");
+            throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.NO_ACTIVE_CAMPAIGNS);
         }
     }
     
@@ -61,10 +67,10 @@ public class RepositoryImpl implements Repository {
             if (!campaignCurrentFound.isEmpty()) {
                 return this.updateCampaignCurrentPhraseFound(request, campaignCurrentFound.get(0));
             } else {
-                throw new AppException(Errors.BAD_REQUEST.getCode(),"Campaign does not exist");
+                throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.CAMPAIGN_DOES_NOT_EXIST);
             }
         } else {
-            throw new AppException(Errors.BAD_REQUEST.getCode(),"New campaign phrase already exists");
+            throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.NEW_CAMPAIGN_PHRASE_EXISTS);
         }
     }
 
@@ -77,13 +83,13 @@ public class RepositoryImpl implements Repository {
                 if (!userFound.isEmpty()) {
                     return createTweet(tweetModel, userFound);
                 } else {
-                    throw new AppException(Errors.BAD_REQUEST.getCode(),"User not found");
+                    throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.USER_NOT_FOUND);
                 }
             } else {
-                throw new AppException(Errors.BAD_REQUEST.getCode(),"The tweeted campaign is not the current one");
+                throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.TWEETED_CAMPAIGN_IS_NOT_CURRENT);
             }
         } else {
-            throw new AppException(Errors.BAD_REQUEST.getCode(),"There are no active campaigns");
+            throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.NO_ACTIVE_CAMPAIGNS);
         }
     }
 
@@ -92,7 +98,7 @@ public class RepositoryImpl implements Repository {
         if (this.findUser(user.getEmail()).isEmpty()) {
             return driver.database().create("user", user);
         } else {
-            throw new AppException(Errors.BAD_REQUEST.getCode(),"E-mail already registered");
+            throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.EMAIL_ALREADY_REGISTERED);
         }
     }
     
@@ -102,7 +108,7 @@ public class RepositoryImpl implements Repository {
         if (!user.isEmpty()) {
             return user.get(0);
         } else {
-            throw new AppException(Errors.BAD_REQUEST.getCode(),"User not found");
+            throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.USER_NOT_FOUND);
         }
     }
     
@@ -112,7 +118,7 @@ public class RepositoryImpl implements Repository {
         if (!tweets.isEmpty()) {
             return tweets;
         } else {
-            throw new AppException(Errors.BAD_REQUEST.getCode(),"User does not have tweets");
+            throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.USER_DOES_NOT_HAVE_TWEETS);
         }
     }
 
@@ -153,7 +159,7 @@ public class RepositoryImpl implements Repository {
             user.setPoints(Operations.INCREMENT.equals(operation) ? user.getPoints() + 10 : user.getPoints() - 10);
             driver.database().update("user", user);
         } else {
-            throw new AppException(Errors.BAD_REQUEST.getCode(),"E-mail already has participated in this campaign");
+            throw new AppException(HttpErrors.BAD_REQUEST.getCode(), Errors.EMAIL_ALREADY_PARTICIPATED);
         }
     }
 

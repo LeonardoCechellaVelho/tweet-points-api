@@ -26,4 +26,11 @@ public class CampaignOperationImpl implements CampaignOperation {
         Campaign campaign = campaignService.setCurrentCampaign(request);
         return CampaignResponse.builder().campaign(campaign).build();
     }
+
+    @Override
+    @Transactional
+    public CampaignResponse getCurrentCampaign() {
+        Campaign campaign = campaignService.getCurrentCampaign();
+        return CampaignResponse.builder().campaign(campaign).build();
+    }
 }

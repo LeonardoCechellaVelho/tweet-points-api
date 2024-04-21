@@ -9,6 +9,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -36,7 +37,7 @@ public interface UserOperation {
     })
     UserResponse addUser(@RequestBody(name = "Add User", description = "User data") UserModel request);
 
-    @POST
+    @GET
     @Path("/get")
     @Operation(summary = "Get User", description = "Get User")
     @Consumes(MediaType.APPLICATION_JSON)

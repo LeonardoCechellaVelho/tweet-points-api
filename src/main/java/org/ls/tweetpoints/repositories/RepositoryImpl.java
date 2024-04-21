@@ -40,6 +40,16 @@ public class RepositoryImpl implements Repository {
             throw new AppException(Errors.BAD_REQUEST.getCode(),"Campaign does not exists");
         }
     }
+    
+    @Override
+    public Campaign getCurrentCampaign() {
+        List<CurrentCampaign> currentCampaign = this.findCurrentCampaign();
+        if (!currentCampaign.isEmpty()) {
+            return currentCampaign.get(0).getCampaign();
+        } else {
+            throw new AppException(Errors.BAD_REQUEST.getCode(),"There are no active campaigns");
+        }
+    }
 
     @Override
     public Tweet persistTweet(TweetModel tweetModel) {
@@ -99,5 +109,9 @@ public class RepositoryImpl implements Repository {
         Map<String, String> params = new HashMap<>();
         params.put("phrase", phrase);
         return driver.database().query("SELECT * FROM campaign WHERE phrase = $phrase", params, Campaign.class).get(0).getResult();
+    }
+
+    private List<CurrentCampaign> findCurrentCampaign() {
+        return driver.database().query("SELECT * FROM currentCampaign ORDER BY timestamp DESC LIMIT 1", null, CurrentCampaign.class).get(0).getResult();
     }
 }

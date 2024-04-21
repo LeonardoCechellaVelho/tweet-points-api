@@ -9,6 +9,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
@@ -22,21 +23,59 @@ public interface CampaignOperation {
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponses(value = {
         @APIResponse(responseCode = "200", description = "Campaign added!", 
-                     content = @Content(mediaType = "application/json", 
-                     schema = @Schema(implementation = CampaignResponse.class)))
+                     content = @Content(mediaType = MediaType.APPLICATION_JSON, 
+                     schema = @Schema(implementation = CampaignResponse.class))),
+        @APIResponse(responseCode = "400", description = "Bad Request", 
+                     content = @Content(mediaType = MediaType.APPLICATION_JSON, 
+                     schema = @Schema(implementation = String.class))),
+        @APIResponse(responseCode = "422", description = "Unprocessable content", 
+                     content = @Content(mediaType = MediaType.APPLICATION_JSON, 
+                     schema = @Schema(implementation = String.class))),
+        @APIResponse(responseCode = "500", description = "System Error", 
+                     content = @Content(mediaType = MediaType.APPLICATION_JSON, 
+                     schema = @Schema(implementation = String.class)))
     })
     CampaignResponse addCampaign(@RequestBody(name = "Add Campaign", description = "Campaign data") Campaign campaign);
 
-    
     @POST
     @Path("/set")
     @Operation(summary = "Set Current Campaign", description = "Set Current Campaign")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @APIResponses(value = {
-        @APIResponse(responseCode = "200", description = "Campaign added!", 
-                     content = @Content(mediaType = "application/json", 
-                     schema = @Schema(implementation = CampaignResponse.class)))
+        @APIResponse(responseCode = "200", description = "Campaign set!", 
+                     content = @Content(mediaType = MediaType.APPLICATION_JSON, 
+                     schema = @Schema(implementation = CampaignResponse.class))),
+        @APIResponse(responseCode = "400", description = "Bad Request", 
+                     content = @Content(mediaType = MediaType.APPLICATION_JSON, 
+                     schema = @Schema(implementation = String.class))),
+        @APIResponse(responseCode = "422", description = "Unprocessable content", 
+                     content = @Content(mediaType = MediaType.APPLICATION_JSON, 
+                     schema = @Schema(implementation = String.class))),
+        @APIResponse(responseCode = "500", description = "System Error", 
+                     content = @Content(mediaType = MediaType.APPLICATION_JSON, 
+                     schema = @Schema(implementation = String.class)))
     })
     CampaignResponse setCurrentCampaign(@RequestBody(name = "Set Current Campaign", description = "Campaign data") Campaign campaign);
+    
+    @GET
+    @Path("/get")
+    @Operation(summary = "Get Current Campaign", description = "Get Current Campaign")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @APIResponses(value = {
+        @APIResponse(responseCode = "200", description = "Campaign found!", 
+                     content = @Content(mediaType = MediaType.APPLICATION_JSON, 
+                     schema = @Schema(implementation = CampaignResponse.class))),
+        @APIResponse(responseCode = "400", description = "Bad Request", 
+                     content = @Content(mediaType = MediaType.APPLICATION_JSON, 
+                     schema = @Schema(implementation = String.class))),
+        @APIResponse(responseCode = "422", description = "Unprocessable content", 
+                     content = @Content(mediaType = MediaType.APPLICATION_JSON, 
+                     schema = @Schema(implementation = String.class))),
+        @APIResponse(responseCode = "500", description = "System Error", 
+                     content = @Content(mediaType = MediaType.APPLICATION_JSON, 
+                     schema = @Schema(implementation = String.class)))
+    })
+    CampaignResponse getCurrentCampaign();
 }

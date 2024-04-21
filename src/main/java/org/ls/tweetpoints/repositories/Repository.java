@@ -10,6 +10,7 @@ public interface Repository {
 
     Campaign persistCampaign(Campaign campaign);
     Campaign setCurrentCampaign(Campaign campaign);
+    Campaign getCurrentCampaign();
     User persistUser(User user);
     User getUser(UserModel userModel);
     Tweet persistTweet(TweetModel tweet);

@@ -16,4 +16,9 @@ public class CampaignServiceImpl implements CampaignService {
     public Campaign addCampaign(Campaign request) {
         return this.repository.persistCampaign(request);
     };
+
+    @Override
+    public Campaign setCurrentCampaign(Campaign request) {
+        return this.repository.setCurrentCampaign(request);
+    };
 }

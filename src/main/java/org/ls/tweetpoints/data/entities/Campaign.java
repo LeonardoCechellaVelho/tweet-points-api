@@ -9,5 +9,4 @@ import lombok.ToString;
 @Getter
 public class Campaign {
     private String phrase;
-    private boolean inCampaign;
 }

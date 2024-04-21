@@ -7,6 +7,7 @@ import org.ls.tweetpoints.data.entities.User;
 public interface Repository {
 
     Campaign persistCampaign(Campaign campaign);
+    Campaign setCurrentCampaign(Campaign campaign);
     User persistUser(User user);
     Tweet persistTweet(Tweet tweet);
 }
